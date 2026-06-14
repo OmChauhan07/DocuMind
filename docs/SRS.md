@@ -60,7 +60,7 @@ Target Users:
 
 The system follows a Microservice Architecture.
 
-```text
+\`\`\`text
 Frontend (Next.js)
         │
         ▼
@@ -74,7 +74,7 @@ Service Agent  Service
  │      │        │
  ▼      ▼        ▼
 Storage LLM   DOCX/PDF
-```
+\`\`\`
 
 ---
 
@@ -152,7 +152,7 @@ System shall support logout functionality.
 
 ## Supported File Types
 
-```text
+\`\`\`text
 .py
 .ipynb
 .csv
@@ -161,7 +161,7 @@ System shall support logout functionality.
 .pdf
 .txt
 .md
-```
+\`\`\`
 
 ### FR-5
 
@@ -236,7 +236,7 @@ Users shall modify existing templates.
 
 ## Standard Report Structure
 
-```text
+\`\`\`text
 Title
 Abstract
 Objectives
@@ -247,7 +247,7 @@ Results
 Discussion
 Conclusion
 References
-```
+\`\`\`
 
 ### FR-16
 
@@ -493,51 +493,51 @@ CI/CD integration support.
 
 ## Users Table
 
-```sql
+\`\`\`sql
 id
 name
 email
 password_hash
 created_at
-```
+\`\`\`
 
 ---
 
 ## Projects Table
 
-```sql
+\`\`\`sql
 id
 user_id
 project_name
 description
 created_at
-```
+\`\`\`
 
 ---
 
 ## Files Table
 
-```sql
+\`\`\`sql
 id
 project_id
 file_name
 file_path
 file_type
 upload_date
-```
+\`\`\`
 
 ---
 
 ## Reports Table
 
-```sql
+\`\`\`sql
 id
 project_id
 report_name
 version
 report_path
 created_at
-```
+\`\`\`
 
 ---
 
@@ -545,41 +545,41 @@ created_at
 
 ## Authentication APIs
 
-```http
+\`\`\`http
 POST /auth/register
 POST /auth/login
 POST /auth/logout
-```
+\`\`\`
 
 ---
 
 ## File APIs
 
-```http
+\`\`\`http
 POST /files/upload
 GET /files
 DELETE /files/{id}
-```
+\`\`\`
 
 ---
 
 ## Report APIs
 
-```http
+\`\`\`http
 POST /reports/generate
 GET /reports/{id}
 PUT /reports/{id}
 DELETE /reports/{id}
-```
+\`\`\`
 
 ---
 
 ## Version APIs
 
-```http
+\`\`\`http
 GET /reports/{id}/versions
 POST /reports/{id}/rollback
-```
+\`\`\`
 
 ---
 
