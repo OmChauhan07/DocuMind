@@ -10,6 +10,14 @@ class Settings(BaseSettings):
     # API
     API_PREFIX: str = "/api/v1"
 
+    # Security
+    SECRET_KEY: str = "supersecretkey-please-change-in-production"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+
+    # Database
+    DATABASE_URL: str = "sqlite:///./documind.db" # Default to sqlite for local dev
+
     # Gemini
     GEMINI_API_KEY: Optional[str] = None
 
