@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+<!-- STITCH_SVG_START:ANIMATION_12 class="fixed inset-0 w-full h-full" --><div class="fixed inset-0 w-full h-full" id="animated-svg-ANIMATION_12" style="display:block;"><svg fill="none" viewbox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<!-- Background Glow -->
+<circle cx="200" cy="150" fill="#4f46e5" fill-opacity="0.05" r="100">
+<animate attributename="r" dur="4s" repeatcount="indefinite" values="100;110;100"></animate>
+</circle>
+<!-- Central Data Node -->
+<rect fill="#4f46e5" height="50" rx="12" width="50" x="175" y="125">
+<animate attributename="fill-opacity" dur="2s" repeatcount="indefinite" values="0.8;1;0.8"></animate>
+</rect>
+<path d="M190 142H210M190 150H210M190 158H202" stroke="white" stroke-linecap="round" stroke-width="2"></path>
+<!-- Orbiting "Agents" -->
+<g>
+<circle fill="#818cf8" r="6">
+<animatemotion dur="6s" path="M 200,150 m -80,0 a 80,80 0 1,0 160,0 a 80,80 0 1,0 -160,0" repeatcount="indefinite"></animatemotion>
+</circle>
+<circle fill="#4f46e5" fill-opacity="0.6" r="4">
+<animatemotion dur="4s" path="M 200,150 m 60,0 a 60,60 0 1,0 -120,0 a 60,60 0 1,0 120,0" repeatcount="indefinite"></animatemotion>
+</circle>
+<circle fill="#c7d2fe" r="5">
+<animatemotion dur="8s" path="M 200,150 m 0,-100 a 100,100 0 1,0 0,200 a 100,100 0 1,0 0,-200" repeatcount="indefinite"></animatemotion>
+</circle>
+</g>
+<!-- Pulsing Data Streams -->
+<line stroke="#4f46e5" stroke-dasharray="4 4" stroke-width="2" x1="200" x2="200" y1="125" y2="80">
+<animate attributename="stroke-dashoffset" dur="1s" repeatcount="indefinite" values="0;8"></animate>
+</line>
+<line stroke="#4f46e5" stroke-dasharray="4 4" stroke-width="2" x1="225" x2="270" y1="150" y2="150">
+<animate attributename="stroke-dashoffset" dur="1s" repeatcount="indefinite" values="0;-8"></animate>
+</line>
+</svg></div><!-- STITCH_SVG_END:ANIMATION_12 -->
+</body>
+</html>

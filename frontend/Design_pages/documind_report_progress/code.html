@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DocuMind - Generating Report</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#c3c0ff",
+                    "surface-container-low": "#f0f3ff",
+                    "surface-container-highest": "#d8e3fb",
+                    "outline": "#777587",
+                    "on-surface-variant": "#464555",
+                    "outline-variant": "#c7c4d8",
+                    "surface-dim": "#cfdaf2",
+                    "surface-variant": "#d8e3fb",
+                    "secondary-fixed": "#e1e0ff",
+                    "on-secondary-fixed": "#07006c",
+                    "on-error-container": "#93000a",
+                    "on-background": "#111c2d",
+                    "background": "#f9f9ff",
+                    "secondary-container": "#6063ee",
+                    "on-tertiary-container": "#ffd2be",
+                    "inverse-on-surface": "#ecf1ff",
+                    "tertiary-fixed": "#ffdbcc",
+                    "primary-container": "#4f46e5",
+                    "on-secondary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#2f2ebe",
+                    "tertiary-fixed-dim": "#ffb695",
+                    "surface-container-high": "#dee8ff",
+                    "primary": "#3525cd",
+                    "inverse-primary": "#c3c0ff",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#351000",
+                    "on-primary-fixed-variant": "#3323cc",
+                    "on-primary-container": "#dad7ff",
+                    "surface-tint": "#4d44e3",
+                    "tertiary": "#7e3000",
+                    "on-primary-fixed": "#0f0069",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#f9f9ff",
+                    "on-tertiary-fixed-variant": "#7b2f00",
+                    "tertiary-container": "#a44100",
+                    "on-secondary-container": "#fffbff",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f9f9ff",
+                    "inverse-surface": "#263143",
+                    "surface-container": "#e7eeff",
+                    "primary-fixed": "#e2dfff",
+                    "on-surface": "#111c2d",
+                    "secondary": "#4648d4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "xs": "4px",
+                    "unit": "4px",
+                    "lg": "24px",
+                    "gutter": "24px",
+                    "huge": "80px",
+                    "margin-mobile": "16px",
+                    "container-max": "1200px",
+                    "xl": "32px",
+                    "xxl": "48px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes progress-shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .progress-bar-shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: progress-shimmer 2s infinite;
+        }
+
+        @keyframes fade-cycle {
+            0%, 20% { opacity: 1; content: "Analyzing data structures..."; }
+            25%, 45% { opacity: 1; content: "Extracting insights..."; }
+            50%, 70% { opacity: 1; content: "Formatting visual layouts..."; }
+            75%, 95% { opacity: 1; content: "Finalizing report..."; }
+            100% { opacity: 1; content: "Analyzing data structures..."; }
+        }
+        
+        .status-text::after {
+            content: "Extracting insights...";
+            animation: fade-cycle 8s infinite;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased overflow-hidden flex h-screen">
+<!-- SideNavBar (Hidden on Mobile) -->
+<aside class="hidden md:flex flex-col h-full p-md bg-surface-container-low border-r border-outline-variant h-screen w-64 fixed left-0 top-0 z-40">
+<div class="flex items-center gap-sm mb-xl">
+<div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[20px]">smart_toy</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">DocuMind</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">AI Report Engine</p>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary font-label-md text-label-md rounded-lg py-sm px-md mb-lg hover:bg-primary transition-colors flex items-center justify-center gap-xs shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            New Report
+        </button>
+<nav class="flex-1 space-y-xs">
+<a class="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all scale-98 active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded-lg text-primary bg-primary-fixed scale-98 active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined icon-fill">description</span>
+<span class="font-label-md text-label-md font-bold">Reports</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all scale-98 active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined">upload_file</span>
+<span class="font-label-md text-label-md">Files</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all scale-98 active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined">article</span>
+<span class="font-label-md text-label-md">Templates</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all scale-98 active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-md border-t border-outline-variant">
+<a class="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all scale-98 active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col md:ml-64 relative min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center px-lg w-full sticky top-0 z-50 bg-white w-full h-16 border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<!-- Mobile Menu Button -->
+<button class="md:hidden text-on-surface-variant hover:bg-surface-container-low p-xs rounded-full transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="md:hidden">
+<span class="font-headline-md text-headline-md font-bold text-primary">DocuMind</span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:bg-surface-container-low p-xs rounded-full transition-colors cursor-pointer active:opacity-80 transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low p-xs rounded-full transition-colors cursor-pointer active:opacity-80 transition-all">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-variant ml-sm overflow-hidden border border-outline-variant cursor-pointer">
+<img alt="User profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdKCodvwaabc7P8C_tDXVC_y9E9wKJ_vuK-iVvOr7uMQK12ls0HfiztpFT78cOd7RY4faHUDI094EE5NiaoxMgQvifuqKa6kd5wFEih4wDbjZnplBTAXxqdqXUj3Xg1o0JFJAGvoldNpJBCqWeVrrfzg1o1-MekaHWUq1xT6aS8_qCaynfUkuxez9ocqNyAJjbeDvPrAGHVKfHWesThN4qQ6vI16d2ytsoDPsMr-wGK85NBTo4CjoUrg"/>
+</div>
+</div>
+</header>
+<!-- Generation Canvas -->
+<div class="flex-1 flex items-center justify-center p-md bg-[#f8fafc]">
+<div class="w-full max-w-lg bg-white rounded-xl shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05),0_2px_4px_-2px_rgba(0,0,0,0.05)] border border-slate-200 p-xl flex flex-col items-center text-center relative overflow-hidden">
+<!-- AI Gradient Border Effect -->
+<div class="absolute inset-0 border border-transparent rounded-xl pointer-events-none" style="background: linear-gradient(to right, #e2e8f0, #e2e8f0) padding-box, linear-gradient(45deg, rgba(79,70,229,0.1), rgba(126,48,0,0.05)) border-box;"></div>
+<!-- Animation Container -->
+<div class="w-48 h-48 mb-lg relative flex items-center justify-center rounded-full bg-surface-container-low">
+
+<!-- Fallback icon while loading animation -->
+<span class="material-symbols-outlined text-[64px] text-primary-container opacity-20 absolute">document_scanner</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-xs">Generating Report</h2>
+<div class="h-6 mb-xl">
+<p class="font-body-md text-body-md text-primary-container status-text animate-pulse-soft font-medium"></p>
+</div>
+<!-- Progress Bar -->
+<div class="w-full mb-md">
+<div class="flex justify-between items-end mb-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Progress</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">65%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden border border-outline-variant">
+<div class="h-full bg-primary-container rounded-full progress-bar-shimmer relative transition-all duration-500 ease-out" style="width: 65%;"></div>
+</div>
+</div>
+<!-- Time Remaining -->
+<div class="flex items-center justify-center gap-xs text-on-surface-variant bg-surface px-md py-sm rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+<span class="font-body-sm text-body-sm">Estimated time remaining: <strong>1m 20s</strong></span>
+</div>
+<!-- Cancel Action -->
+<button class="mt-lg font-label-md text-label-md text-on-surface-variant hover:text-error transition-colors px-md py-xs rounded-full hover:bg-error-container">
+                    Cancel Generation
+                </button>
+</div>
+</div>
+</main>
+</body></html>

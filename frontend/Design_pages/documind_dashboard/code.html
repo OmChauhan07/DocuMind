@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DocuMind - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#c0c1ff",
+                        "on-tertiary-container": "#ffd2be",
+                        "tertiary": "#7e3000",
+                        "secondary-container": "#6063ee",
+                        "outline": "#777587",
+                        "on-primary-container": "#dad7ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#4d44e3",
+                        "inverse-surface": "#263143",
+                        "tertiary-container": "#a44100",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "surface-container-low": "#f0f3ff",
+                        "surface-variant": "#d8e3fb",
+                        "surface-container": "#e7eeff",
+                        "surface": "#f9f9ff",
+                        "on-error-container": "#93000a",
+                        "background": "#f9f9ff",
+                        "primary": "#3525cd",
+                        "surface-dim": "#cfdaf2",
+                        "outline-variant": "#c7c4d8",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-secondary-fixed": "#07006c",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "on-background": "#111c2d",
+                        "inverse-primary": "#c3c0ff",
+                        "secondary": "#4648d4",
+                        "surface-bright": "#f9f9ff",
+                        "on-secondary-container": "#fffbff",
+                        "secondary-fixed": "#e1e0ff",
+                        "primary-container": "#4f46e5",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "tertiary-fixed": "#ffdbcc",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#e2dfff",
+                        "on-surface": "#111c2d",
+                        "on-secondary-fixed-variant": "#2f2ebe",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "on-surface-variant": "#464555",
+                        "on-primary-fixed": "#0f0069",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#dee8ff",
+                        "on-tertiary-fixed": "#351000"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "huge": "80px",
+                        "gutter": "24px",
+                        "xxl": "48px",
+                        "container-max": "1200px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-full flex overflow-hidden">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-screen fixed left-0 top-0 py-lg px-md w-64 border-r border-outline-variant bg-surface z-50">
+<div class="flex items-center gap-3 mb-xl px-sm">
+<img alt="DocuMind Logo" class="w-8 h-8 rounded-DEFAULT object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLvzl6f4gvApxd5WKxNaAJ6UCbI4deBV-xz-MJgj_KJoolaXWq6ZSuVPaeRlr_kH_383THxGlIXmk9Q247GhH8jAa1zRCt3TETcXWgJyRN0SuDdAOj55gEgc_aHx1Rki0wvrnw10Iyd6xY0hVYs1nMFplXEiqTYFeEtdLR5Z69H0GFwDdSP4uZk1riGCxT8dMn-NlEPVV7KWTnqvclakAimTJY5l3a3fQAUgJ01wAxpTdnecWegUv4Ocof0P"/>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary">DocuMind</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">AI Report Generator</p>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary font-label-md text-label-md py-3 px-4 rounded-lg mb-8 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 18px;">add</span>
+            Generate New Report
+        </button>
+<ul class="flex-1 flex flex-col gap-sm">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-lg font-bold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">upload_file</span>
+<span class="font-label-md text-label-md">Upload Files</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">My Reports</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">layers</span>
+<span class="font-label-md text-label-md">Templates</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto pt-lg border-t border-outline-variant">
+<div class="flex items-center gap-3 px-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-bold">JD</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Jane Doe</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">jane@example.com</p>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-64 h-screen overflow-hidden">
+<!-- TopNavBar -->
+<header class="h-16 w-full border-b border-outline-variant bg-surface/80 backdrop-blur-md flex justify-between items-center px-lg sticky top-0 z-40">
+<!-- Mobile Menu Button & Brand -->
+<div class="flex md:hidden items-center gap-3">
+<button class="p-2 text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<img alt="DocuMind Logo" class="w-6 h-6 rounded-DEFAULT object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLvzl6f4gvApxd5WKxNaAJ6UCbI4deBV-xz-MJgj_KJoolaXWq6ZSuVPaeRlr_kH_383THxGlIXmk9Q247GhH8jAa1zRCt3TETcXWgJyRN0SuDdAOj55gEgc_aHx1Rki0wvrnw10Iyd6xY0hVYs1nMFplXEiqTYFeEtdLR5Z69H0GFwDdSP4uZk1riGCxT8dMn-NlEPVV7KWTnqvclakAimTJY5l3a3fQAUgJ01wAxpTdnecWegUv4Ocof0P"/>
+</div>
+<!-- Search Bar -->
+<div class="hidden md:flex flex-1 max-w-md relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full h-10 pl-10 pr-4 bg-surface-container-low border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 transition-all" placeholder="Search reports..." type="text"/>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors focus:ring-2 focus:ring-primary ring-opacity-50 rounded-full p-2">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors focus:ring-2 focus:ring-primary ring-opacity-50 rounded-full p-2">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="md:hidden w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-bold text-sm">JD</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<main class="flex-1 overflow-y-auto p-margin-mobile md:p-xl lg:p-huge">
+<div class="max-w-container-max mx-auto">
+<!-- Header Row -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-xl">
+<div>
+<h2 class="text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">Recent Reports</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Overview of your latest AI-generated documents.</p>
+</div>
+<button class="bg-primary-container text-on-primary font-label-md text-label-md h-12 px-lg rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 whitespace-nowrap md:hidden shadow-sm">
+<span class="material-symbols-outlined" style="font-size: 18px;">add</span>
+                        New Report
+                    </button>
+</div>
+<!-- Metrics/Quick Stats Bento -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg mb-xxl">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex items-center justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs uppercase tracking-wider">Total Reports</p>
+<p class="font-display-lg text-display-lg text-primary">142</p>
+</div>
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex items-center justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs uppercase tracking-wider">Generated This Week</p>
+<p class="font-display-lg text-display-lg text-primary">12</p>
+</div>
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex items-center justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs uppercase tracking-wider">Drafts</p>
+<p class="font-display-lg text-display-lg text-on-surface">5</p>
+</div>
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">edit_document</span>
+</div>
+</div>
+</div>
+<!-- Report Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg hover:shadow-md transition-shadow group relative overflow-hidden">
+<!-- AI Gradient Border Indicator -->
+<div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-[#818cf8] opacity-50"></div>
+<div class="flex justify-between items-start mb-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-size: 20px;">monitoring</span>
+</div>
+<span class="px-2 py-1 bg-[#e0f2fe] text-[#0369a1] font-label-sm text-label-sm rounded-full">Completed</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs group-hover:text-primary transition-colors line-clamp-1">Q4 Financial Analysis</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-lg line-clamp-2">Comprehensive breakdown of Q4 revenue streams, cost analysis, and projected Q1 forecasts based on historical data.</p>
+<div class="flex items-center justify-between pt-md border-t border-outline-variant">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 16px;">calendar_today</span>
+<span class="font-label-sm text-label-sm">Oct 24, 2023</span>
+</div>
+<button class="text-primary hover:bg-surface-container-high p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg hover:shadow-md transition-shadow group relative overflow-hidden">
+<div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-[#818cf8] opacity-50"></div>
+<div class="flex justify-between items-start mb-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-size: 20px;">group</span>
+</div>
+<span class="px-2 py-1 bg-surface-variant text-on-surface-variant font-label-sm text-label-sm rounded-full">Draft</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs group-hover:text-primary transition-colors line-clamp-1">User Growth Report</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-lg line-clamp-2">Analysis of new user acquisition channels and retention rates over the past 30 days. Needs final review.</p>
+<div class="flex items-center justify-between pt-md border-t border-outline-variant">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 16px;">calendar_today</span>
+<span class="font-label-sm text-label-sm">Oct 22, 2023</span>
+</div>
+<button class="text-primary hover:bg-surface-container-high p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg hover:shadow-md transition-shadow group relative overflow-hidden">
+<div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-[#818cf8] opacity-50"></div>
+<div class="flex justify-between items-start mb-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-size: 20px;">security</span>
+</div>
+<span class="px-2 py-1 bg-[#e0f2fe] text-[#0369a1] font-label-sm text-label-sm rounded-full">Completed</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs group-hover:text-primary transition-colors line-clamp-1">Security Audit</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-lg line-clamp-2">Annual compliance review and vulnerability assessment for main production environments.</p>
+<div class="flex items-center justify-between pt-md border-t border-outline-variant">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 16px;">calendar_today</span>
+<span class="font-label-sm text-label-sm">Oct 18, 2023</span>
+</div>
+<button class="text-primary hover:bg-surface-container-high p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg hover:shadow-md transition-shadow group relative overflow-hidden">
+<div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-[#818cf8] opacity-50"></div>
+<div class="flex justify-between items-start mb-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-size: 20px;">campaign</span>
+</div>
+<span class="px-2 py-1 bg-surface-variant text-on-surface-variant font-label-sm text-label-sm rounded-full">Draft</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs group-hover:text-primary transition-colors line-clamp-1">Marketing ROI</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-lg line-clamp-2">Evaluation of recent ad spend across social platforms vs. conversions. AI insights generated.</p>
+<div class="flex items-center justify-between pt-md border-t border-outline-variant">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 16px;">calendar_today</span>
+<span class="font-label-sm text-label-sm">Oct 15, 2023</span>
+</div>
+<button class="text-primary hover:bg-surface-container-high p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
