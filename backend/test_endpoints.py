@@ -11,10 +11,10 @@ def test_health():
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
         assert data.get("status") == "ok", f"Expected status 'ok', got {data.get('status')}"
-        print("✅ Health check passed.")
+        print("âœ… Health check passed.")
         return True
     except Exception as e:
-        print(f"❌ Health check failed: {e}")
+        print(f"âŒ Health check failed: {e}")
         return False
 
 def test_auth():
@@ -35,17 +35,15 @@ def test_auth():
         return False
 
     # Test Login
-    login_data = {"username": random_email, "password": password}
+    login_data = {"email": random_email, "password": password}
     try:
-        login_res = requests.post(f"{api_url}/auth/login", data=login_data)
+        login_res = requests.post(f"{api_url}/auth/login", json=login_data)
         assert login_res.status_code == 200, f"Expected 200 OK, got {login_res.status_code}. Response: {login_res.text}"
         token_data = login_res.json()
         assert "access_token" in token_data, "Response missing access_token"
         assert token_data["token_type"] == "bearer", "Incorrect token type"
-        print("✅ User Login passed.")
-        return True
     except Exception as e:
-        print(f"❌ User Login failed: {e}")
+        print(f"âŒ User Login failed: {e}")
         return False
 
 if __name__ == "__main__":
@@ -55,8 +53,8 @@ if __name__ == "__main__":
     auth_ok = test_auth()
     
     if health_ok and auth_ok:
-        print("\n🎉 All tests passed successfully!")
+        print("\nðŸŽ‰ All tests passed successfully!")
         sys.exit(0)
     else:
-        print("\n💥 Some tests failed.")
+        print("\nðŸ’¥ Some tests failed.")
         sys.exit(1)

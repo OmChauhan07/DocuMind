@@ -42,7 +42,7 @@ def upload_file(
     
     return new_file
 
-@router.get("/", response_model=List[FileResponse])
+@router.get("", response_model=List[FileResponse])
 def get_files(project_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     # Verify Project belongs to current user
     project = db.query(Project).filter(Project.id == project_id, Project.user_id == current_user.id).first()

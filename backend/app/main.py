@@ -3,16 +3,22 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import os
 from app.core.config import settings
+from app.core.database import engine
+from app.models.base import Base
+from app.models import user, project, file, report  # Import all models so tables are registered
 from app.api.routes.health import router as health_router
 from app.api.routes.auth import router as auth_router
 from app.api.routes.projects import router as projects_router
 from app.api.routes.files import router as files_router
+from app.api.routes.reports import router as reports_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup logic
     os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
     os.makedirs(settings.OUTPUT_DIR, exist_ok=True)
+    # Auto-create all tables for development (SQLite)
+    Base.metadata.create_all(bind=engine)
     yield
     # Shutdown logic (if any)
 
@@ -55,6 +61,12 @@ app.include_router(
     files_router,
     prefix=f"{settings.API_PREFIX}/files",
     tags=["Files"]
+)
+
+app.include_router(
+    reports_router,
+    prefix=f"{settings.API_PREFIX}/reports",
+    tags=["Reports"]
 )
 
 

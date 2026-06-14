@@ -9,7 +9,7 @@ from app.schemas.project import ProjectCreate, ProjectResponse
 
 router = APIRouter()
 
-@router.post("/", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
 def create_project(project: ProjectCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     new_project = Project(
         user_id=current_user.id,
@@ -21,7 +21,7 @@ def create_project(project: ProjectCreate, db: Session = Depends(get_db), curren
     db.refresh(new_project)
     return new_project
 
-@router.get("/", response_model=List[ProjectResponse])
+@router.get("", response_model=List[ProjectResponse])
 def get_projects(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     projects = db.query(Project).filter(Project.user_id == current_user.id).all()
     return projects
