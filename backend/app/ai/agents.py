@@ -1,7 +1,9 @@
 from crewai import Agent
-from app.ai.llm import DEFAULT_LLM_MODEL
+from app.ai.llm import HEAVY_MODEL, LIGHT_MODEL
+
 
 def get_analyzer_agent() -> Agent:
+    """Uses HEAVY model – needs deep understanding of code, data, and documents."""
     return Agent(
         role="Senior Data and Code Analyzer",
         goal="Thoroughly analyze provided files, extracting key information, metadata, functions, classes, and insights.",
@@ -11,10 +13,11 @@ def get_analyzer_agent() -> Agent:
         ),
         verbose=True,
         allow_delegation=False,
-        llm=DEFAULT_LLM_MODEL
+        llm=HEAVY_MODEL
     )
 
 def get_writer_agent() -> Agent:
+    """Uses HEAVY model – needs to synthesize analysis into coherent prose."""
     return Agent(
         role="Technical Report Writer",
         goal="Draft comprehensive, well-structured report sections based on the analyzer's findings.",
@@ -24,10 +27,11 @@ def get_writer_agent() -> Agent:
         ),
         verbose=True,
         allow_delegation=False,
-        llm=DEFAULT_LLM_MODEL
+        llm=HEAVY_MODEL
     )
 
 def get_reviewer_agent() -> Agent:
+    """Uses HEAVY model – needs to catch logical / factual issues, not just typos."""
     return Agent(
         role="Quality Assurance Reviewer",
         goal="Review the drafted report for grammar, consistency, and professional tone.",
@@ -37,10 +41,11 @@ def get_reviewer_agent() -> Agent:
         ),
         verbose=True,
         allow_delegation=False,
-        llm=DEFAULT_LLM_MODEL
+        llm=HEAVY_MODEL
     )
 
 def get_formatter_agent() -> Agent:
+    """Uses LIGHT model – purely mechanical markdown formatting, no deep reasoning."""
     return Agent(
         role="Document Formatter",
         goal="Format the reviewed text into a clean markdown structure ready for DOCX/PDF export.",
@@ -50,5 +55,5 @@ def get_formatter_agent() -> Agent:
         ),
         verbose=True,
         allow_delegation=False,
-        llm=DEFAULT_LLM_MODEL
+        llm=LIGHT_MODEL
     )
