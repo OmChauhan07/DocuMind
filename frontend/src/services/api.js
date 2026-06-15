@@ -28,6 +28,7 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('documind_token');
       localStorage.removeItem('documind_user');
+      window.dispatchEvent(new Event('auth:unauthorized'));
       // Only redirect if not already on login/register pages
       if (!window.location.pathname.startsWith('/login') && !window.location.pathname.startsWith('/register')) {
         window.location.href = '/login';

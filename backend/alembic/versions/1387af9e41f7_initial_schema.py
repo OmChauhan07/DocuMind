@@ -56,6 +56,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('project_id', sa.Integer(), nullable=False),
     sa.Column('report_name', sa.String(), nullable=False),
+    sa.Column('template_type', sa.String(), nullable=True),
     sa.Column('version', sa.Integer(), nullable=False),
     sa.Column('report_path', sa.String(), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),

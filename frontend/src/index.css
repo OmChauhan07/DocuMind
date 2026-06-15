@@ -14,8 +14,4 @@
     animation: progress-shimmer 2s infinite;
   }
 
-  .status-text::after {
-    content: "Extracting insights...";
-    animation: fade-cycle 8s infinite;
-  }
 }

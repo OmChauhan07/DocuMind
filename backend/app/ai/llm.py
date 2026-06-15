@@ -11,4 +11,4 @@ def setup_llm_env():
         print("WARNING: GEMINI_API_KEY is not set in the environment or configuration.")
 
 # We will use this string identifier for our agents
-DEFAULT_LLM_MODEL = "gemini/gemma-4-26b-a4b-it"
+DEFAULT_LLM_MODEL = "gemini/gemini-2.5-flash"

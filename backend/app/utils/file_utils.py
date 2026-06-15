@@ -1,5 +1,6 @@
 import os
 import shutil
+import uuid
 from fastapi import UploadFile, HTTPException, status
 from app.core.config import settings
 
@@ -36,10 +37,9 @@ def save_upload_file(file: UploadFile, project_id: int) -> str:
     project_dir = os.path.join(settings.UPLOAD_DIR, str(project_id))
     os.makedirs(project_dir, exist_ok=True)
     
-    file_path = os.path.join(project_dir, file.filename)
-    
-    # Optional: Prevent overwriting existing files with same name
-    # You could append a timestamp or UUID to filename here if desired.
+    safe_filename = os.path.basename(file.filename)
+    unique_filename = f"{uuid.uuid4().hex}_{safe_filename}"
+    file_path = os.path.join(project_dir, unique_filename)
     
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)

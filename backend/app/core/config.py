@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import Optional
+from typing import Optional, List
 
 class Settings(BaseSettings):
     # App
@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "supersecretkey-please-change-in-production"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    CORS_ORIGINS: List[str] = ["http://localhost:5173", "http://localhost:3000"]
 
     # Database
     DATABASE_URL: str = "sqlite:///./documind.db" # Default to sqlite for local dev
@@ -30,3 +31,6 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+if not settings.DEBUG and settings.SECRET_KEY == "supersecretkey-please-change-in-production":
+    print("WARNING: Using the default SECRET_KEY in a non-debug environment is a critical security vulnerability!")

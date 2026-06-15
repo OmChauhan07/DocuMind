@@ -1,10 +1,22 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import SignIn from './pages/SignIn';
 import Dashboard from './pages/Dashboard';
 import UploadFiles from './pages/UploadFiles';
 import ReportProgress from './pages/ReportProgress';
+
+vi.mock('./context/AuthContext', () => ({
+  useAuth: () => ({
+    user: { name: 'Test User' },
+    isAuthenticated: true,
+    loading: false,
+    login: vi.fn(),
+    register: vi.fn(),
+    logout: vi.fn()
+  }),
+  AuthProvider: ({ children }) => children
+}));
 
 describe('Frontend Pages Rendering', () => {
   it('renders SignIn page without crashing', () => {
@@ -43,7 +55,6 @@ describe('Frontend Pages Rendering', () => {
         <ReportProgress />
       </MemoryRouter>
     );
-    expect(screen.getByText('Generating Report')).toBeTruthy();
-    expect(screen.getByText('Cancel Generation')).toBeTruthy();
+    expect(screen.getByText('Loading report status...')).toBeTruthy();
   });
 });

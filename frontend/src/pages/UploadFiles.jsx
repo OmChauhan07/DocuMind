@@ -133,8 +133,10 @@ export default function UploadFiles() {
     setDragOver(true);
   };
 
-  const handleDragLeave = () => {
-    setDragOver(false);
+  const handleDragLeave = (e) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setDragOver(false);
+    }
   };
 
   const handleDeleteFile = async (fileId) => {
@@ -169,7 +171,9 @@ export default function UploadFiles() {
   };
 
   const getFileIcon = (fileType) => {
-    switch (fileType) {
+    if (!fileType) return 'insert_drive_file';
+    const normalizedType = fileType.replace(/^\./, '').toLowerCase();
+    switch (normalizedType) {
       case 'py': return 'code';
       case 'ipynb': return 'data_object';
       case 'csv': case 'xlsx': return 'table_view';

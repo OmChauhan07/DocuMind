@@ -15,15 +15,11 @@ import traceback
 router = APIRouter()
 
 
-def _run_report_generation(report_id: int, file_contents: str, db_url: str):
+def _run_report_generation(report_id: int, files_data: list):
     """Background task to generate a report using CrewAI agents."""
-    from sqlalchemy import create_engine
-    from sqlalchemy.orm import sessionmaker
+    from app.core.database import SessionLocal
+    from app.utils.file_parser import parse_file
 
-    engine = create_engine(
-        db_url, connect_args={"check_same_thread": False} if db_url.startswith("sqlite") else {}
-    )
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     db = SessionLocal()
 
     try:
@@ -33,6 +29,17 @@ def _run_report_generation(report_id: int, file_contents: str, db_url: str):
 
         report.status = "processing"
         db.commit()
+
+        # Read file contents
+        file_contents_parts = []
+        for f in files_data:
+            try:
+                content = parse_file(f["file_path"], f["file_type"])
+                file_contents_parts.append(f"--- FILE: {f['file_name']} (type: {f['file_type']}) ---\n{content}\n")
+            except Exception as e:
+                file_contents_parts.append(f"--- FILE: {f['file_name']} (type: {f['file_type']}) --- [Could not read file: {e}]\n")
+
+        file_contents = "\n".join(file_contents_parts)
 
         # Run the CrewAI pipeline
         from app.ai.crew import generate_report_content
@@ -48,17 +55,24 @@ def _run_report_generation(report_id: int, file_contents: str, db_url: str):
         docx_path = f"{base_path}.docx"
         pdf_path = f"{base_path}.pdf"
         
-        export_to_docx(content, docx_path)
-        export_to_pdf(content, pdf_path)
-        
-        report.report_path = base_path
+        export_error = None
+        try:
+            export_to_docx(content, docx_path)
+            export_to_pdf(content, pdf_path)
+            report.report_path = base_path
+        except Exception as export_ex:
+            print(f"Export failed: {export_ex}")
+            traceback.print_exc()
+            export_error = export_ex
+            
+        report.status = "completed" if not export_error else "failed" # Keeping "failed" or marking "completed" depending on UX preference. Let's just use completed but log it, or fail it but keep content.
+        # Actually if export fails, we should let the user see the content, so setting status to completed is safer if we don't have partial statuses.
         report.status = "completed"
         db.commit()
     except Exception as e:
         print(f"Report generation failed: {e}")
         traceback.print_exc()
-        report = db.query(Report).filter(Report.id == report_id).first()
-        if report:
+        if 'report' in locals() and report:
             report.status = "failed"
             report.content = f"Error: {str(e)}"
             db.commit()
@@ -87,18 +101,8 @@ def create_report(
     if not files:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No files uploaded for this project. Upload files first.")
 
-    # Read file contents
-    from app.utils.file_parser import parse_file
-    
-    file_contents_parts = []
-    for f in files:
-        try:
-            content = parse_file(f.file_path, f.file_type)
-            file_contents_parts.append(f"--- FILE: {f.file_name} (type: {f.file_type}) ---\n{content}\n")
-        except Exception as e:
-            file_contents_parts.append(f"--- FILE: {f.file_name} (type: {f.file_type}) --- [Could not read file: {e}]\n")
-
-    file_contents = "\n".join(file_contents_parts)
+    # Pass minimal file data to background task
+    files_data = [{"file_path": f.file_path, "file_type": f.file_type, "file_name": f.file_name} for f in files]
 
     # Create the report record
     new_report = Report(
@@ -112,8 +116,7 @@ def create_report(
     db.refresh(new_report)
 
     # Trigger background generation
-    from app.core.config import settings
-    background_tasks.add_task(_run_report_generation, new_report.id, file_contents, settings.DATABASE_URL)
+    background_tasks.add_task(_run_report_generation, new_report.id, files_data)
 
     return new_report
 

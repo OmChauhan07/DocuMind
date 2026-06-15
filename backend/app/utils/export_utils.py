@@ -1,4 +1,5 @@
 import os
+import re
 from docx import Document
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
@@ -7,7 +8,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 def export_to_docx(content: str, output_path: str):
     """
     Exports a markdown string to a DOCX file.
-    Provides basic parsing for headings and paragraphs.
+    Provides basic parsing for headings, paragraphs, and bold text.
     """
     doc = Document()
     
@@ -16,23 +17,37 @@ def export_to_docx(content: str, output_path: str):
         if not line:
             continue
             
+        p = None
         if line.startswith('# '):
-            doc.add_heading(line[2:], level=1)
+            p = doc.add_heading(level=1)
+            line = line[2:]
         elif line.startswith('## '):
-            doc.add_heading(line[3:], level=2)
+            p = doc.add_heading(level=2)
+            line = line[3:]
         elif line.startswith('### '):
-            doc.add_heading(line[4:], level=3)
+            p = doc.add_heading(level=3)
+            line = line[4:]
         elif line.startswith('- ') or line.startswith('* '):
-            doc.add_paragraph(line[2:], style='List Bullet')
+            p = doc.add_paragraph(style='List Bullet')
+            line = line[2:]
         else:
-            doc.add_paragraph(line)
+            p = doc.add_paragraph()
+            
+        # Parse **bold** text
+        parts = re.split(r'(\*\*.*?\*\*)', line)
+        for part in parts:
+            if part.startswith('**') and part.endswith('**') and len(part) >= 4:
+                run = p.add_run(part[2:-2])
+                run.bold = True
+            else:
+                p.add_run(part)
             
     doc.save(output_path)
 
 def export_to_pdf(content: str, output_path: str):
     """
     Exports a markdown string to a PDF file using ReportLab.
-    Provides basic parsing for headings and paragraphs.
+    Provides basic parsing for headings, paragraphs, and bold text.
     """
     doc = SimpleDocTemplate(output_path, pagesize=letter)
     styles = getSampleStyleSheet()
@@ -43,6 +58,9 @@ def export_to_pdf(content: str, output_path: str):
         if not line:
             story.append(Spacer(1, 12))
             continue
+            
+        # Replace **text** with <b>text</b> for ReportLab
+        line = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', line)
             
         if line.startswith('# '):
             story.append(Paragraph(line[2:], styles['Heading1']))

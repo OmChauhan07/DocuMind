@@ -26,14 +26,10 @@ export const reportsService = {
   },
 
   async downloadReport(id, format, reportName) {
-    const token = localStorage.getItem('documind_token');
-    const response = await fetch(`/api/v1/reports/${id}/download/${format}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+    const response = await api.get(`/reports/${id}/download/${format}`, {
+      responseType: 'blob'
     });
-    if (!response.ok) throw new Error('Download failed');
-    const blob = await response.blob();
+    const blob = response.data;
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

@@ -26,6 +26,15 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     loadUser();
+
+    const handleUnauthorized = () => {
+      setUser(null);
+    };
+
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => {
+      window.removeEventListener('auth:unauthorized', handleUnauthorized);
+    };
   }, [loadUser]);
 
   const login = async (email, password) => {
@@ -37,10 +46,14 @@ export function AuthProvider({ children }) {
 
   const register = async (name, email, password) => {
     const result = await authService.register(name, email, password);
-    // Auto-login after registration
-    await authService.login(email, password);
-    const userData = await authService.getCurrentUser();
-    setUser(userData);
+    try {
+      // Auto-login after registration
+      await authService.login(email, password);
+      const userData = await authService.getCurrentUser();
+      setUser(userData);
+    } catch (err) {
+      throw new Error('Registration successful, but auto-login failed. Please sign in manually.');
+    }
     return result;
   };
 
