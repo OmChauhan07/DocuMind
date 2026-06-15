@@ -1,9 +1,10 @@
 import api from './api';
 
 export const filesService = {
-  async uploadFile(projectId, file) {
+  async uploadFile(projectId, file, isTemplate = false) {
     const formData = new FormData();
     formData.append('project_id', projectId);
+    formData.append('is_template', isTemplate);
     formData.append('file', file);
 
     const response = await api.post('/files/upload', formData, {

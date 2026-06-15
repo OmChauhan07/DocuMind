@@ -21,6 +21,7 @@ export default function UploadFiles() {
   const [reportName, setReportName] = useState('');
   const [error, setError] = useState('');
   const [dragOver, setDragOver] = useState(false);
+  const [uploadAsTemplate, setUploadAsTemplate] = useState(false);
 
   useEffect(() => {
     loadProjects();
@@ -104,7 +105,7 @@ export default function UploadFiles() {
       }
 
       try {
-        const uploaded = await filesService.uploadFile(selectedProjectId, file);
+        const uploaded = await filesService.uploadFile(selectedProjectId, file, uploadAsTemplate);
         setUploadedFiles((prev) => [...prev, uploaded]);
       } catch (err) {
         const detail = err.response?.data?.detail || `Failed to upload ${file.name}`;
@@ -153,6 +154,13 @@ export default function UploadFiles() {
       setError('Please upload at least one file first.');
       return;
     }
+    
+    const contentFiles = uploadedFiles.filter(f => !f.is_template);
+    if (contentFiles.length === 0) {
+      setError('Please upload at least one content file (not marked as a template).');
+      return;
+    }
+    
     if (!reportName.trim()) {
       setError('Please enter a report name.');
       return;
@@ -304,6 +312,20 @@ export default function UploadFiles() {
               <span key={ext} className="inline-flex items-center px-3 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">{ext}</span>
             ))}
           </div>
+          
+          {/* Template Checkbox */}
+          <div className="mt-lg flex items-center justify-center gap-2">
+            <input 
+              type="checkbox" 
+              id="uploadAsTemplate" 
+              className="w-5 h-5 text-primary border-outline-variant rounded focus:ring-primary focus:ring-2"
+              checked={uploadAsTemplate}
+              onChange={(e) => setUploadAsTemplate(e.target.checked)}
+            />
+            <label htmlFor="uploadAsTemplate" className="font-body-md text-body-md text-on-surface cursor-pointer select-none">
+              Upload as Sample Format Template
+            </label>
+          </div>
         </div>
 
         {/* Uploaded Files List */}
@@ -318,7 +340,14 @@ export default function UploadFiles() {
                       <span className="material-symbols-outlined">{getFileIcon(file.file_type)}</span>
                     </div>
                     <div>
-                      <p className="font-label-md text-label-md text-on-surface">{file.file_name}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-label-md text-label-md text-on-surface">{file.file_name}</p>
+                        {file.is_template && (
+                          <span className="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold tracking-wider">
+                            TEMPLATE
+                          </span>
+                        )}
+                      </div>
                       <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">
                         {file.file_type.toUpperCase()} &bull; Uploaded {new Date(file.upload_date).toLocaleTimeString()}
                       </p>

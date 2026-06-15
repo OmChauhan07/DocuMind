@@ -5,6 +5,7 @@ from typing import Optional
 class FileBase(BaseModel):
     file_name: str
     file_type: str
+    is_template: bool = False
 
 class FileResponse(FileBase):
     id: int

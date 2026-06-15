@@ -9,7 +9,7 @@ print(reg_res.status_code)
 print(reg_res.json())
 
 print("\n--- Testing Login ---")
-login_data = {"username": "test@example.com", "password": "securepassword"}
-login_res = requests.post(f"{base_url}/login", data=login_data)
+login_data = {"email": "test@example.com", "password": "securepassword"}
+login_res = requests.post(f"{base_url}/login", json=login_data)
 print(login_res.status_code)
 print(login_res.json())

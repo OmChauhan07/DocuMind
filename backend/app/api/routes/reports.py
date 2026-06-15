@@ -15,7 +15,7 @@ import traceback
 router = APIRouter()
 
 
-def _run_report_generation(report_id: int, files_data: list):
+def _run_report_generation(report_id: int, files_data: list, template_data: list = None):
     """Background task to generate a report using CrewAI agents."""
     from app.core.database import SessionLocal
     from app.utils.file_parser import parse_file
@@ -41,9 +41,21 @@ def _run_report_generation(report_id: int, files_data: list):
 
         file_contents = "\n".join(file_contents_parts)
 
+        # Read template contents
+        template_contents = ""
+        if template_data:
+            template_parts = []
+            for t in template_data:
+                try:
+                    content = parse_file(t["file_path"], t["file_type"])
+                    template_parts.append(f"--- TEMPLATE FORMAT: {t['file_name']} ---\n{content}\n")
+                except Exception as e:
+                    template_parts.append(f"--- TEMPLATE FORMAT: {t['file_name']} --- [Could not read file: {e}]\n")
+            template_contents = "\n".join(template_parts)
+
         # Run the CrewAI pipeline
         from app.ai.crew import generate_report_content
-        content = generate_report_content(file_contents)
+        content = generate_report_content(file_contents, template_contents)
 
         report.content = content
         
@@ -70,12 +82,20 @@ def _run_report_generation(report_id: int, files_data: list):
         report.status = "completed"
         db.commit()
     except Exception as e:
-        print(f"Report generation failed: {e}")
-        traceback.print_exc()
+        safe_error = str(e).encode('ascii', 'ignore').decode('ascii')
         if 'report' in locals() and report:
-            report.status = "failed"
-            report.content = f"Error: {str(e)}"
-            db.commit()
+            try:
+                report.status = "failed"
+                report.content = f"Error: {safe_error}"
+                db.commit()
+            except Exception as db_e:
+                pass
+        
+        try:
+            print(f"Report generation failed: {safe_error}")
+            traceback.print_exc()
+        except:
+            pass
     finally:
         db.close()
 
@@ -101,8 +121,15 @@ def create_report(
     if not files:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No files uploaded for this project. Upload files first.")
 
+    content_files = [f for f in files if not f.is_template]
+    template_files = [f for f in files if f.is_template]
+
+    if not content_files:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No content files uploaded for this project. Upload at least one content file.")
+
     # Pass minimal file data to background task
-    files_data = [{"file_path": f.file_path, "file_type": f.file_type, "file_name": f.file_name} for f in files]
+    content_data = [{"file_path": f.file_path, "file_type": f.file_type, "file_name": f.file_name} for f in content_files]
+    template_data = [{"file_path": f.file_path, "file_type": f.file_type, "file_name": f.file_name} for f in template_files]
 
     # Create the report record
     new_report = Report(
@@ -116,7 +143,7 @@ def create_report(
     db.refresh(new_report)
 
     # Trigger background generation
-    background_tasks.add_task(_run_report_generation, new_report.id, files_data)
+    background_tasks.add_task(_run_report_generation, new_report.id, content_data, template_data)
 
     return new_report
 

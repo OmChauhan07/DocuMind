@@ -16,7 +16,7 @@ def test_auth_and_get_token():
     reg_res = session.post(f"{base_url}/auth/register", json={"name": "File Test User", "email": random_email, "password": password})
     assert reg_res.status_code == 201, f"Reg failed: {reg_res.text}"
     
-    login_res = session.post(f"{base_url}/auth/login", data={"username": random_email, "password": password})
+    login_res = session.post(f"{base_url}/auth/login", json={"email": random_email, "password": password})
     assert login_res.status_code == 200, f"Login failed: {login_res.text}"
     
     token = login_res.json()["access_token"]

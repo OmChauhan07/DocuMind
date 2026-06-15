@@ -47,6 +47,7 @@ def upgrade() -> None:
     sa.Column('file_name', sa.String(), nullable=False),
     sa.Column('file_path', sa.String(), nullable=False),
     sa.Column('file_type', sa.String(), nullable=False),
+    sa.Column('is_template', sa.Boolean(), server_default='0', nullable=True),
     sa.Column('upload_date', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.ForeignKeyConstraint(['project_id'], ['projects.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')

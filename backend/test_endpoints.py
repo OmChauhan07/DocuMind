@@ -42,6 +42,8 @@ def test_auth():
         token_data = login_res.json()
         assert "access_token" in token_data, "Response missing access_token"
         assert token_data["token_type"] == "bearer", "Incorrect token type"
+        print("✅ User Login passed.")
+        return True
     except Exception as e:
         print(f"âŒ User Login failed: {e}")
         return False

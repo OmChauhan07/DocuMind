@@ -14,6 +14,7 @@ router = APIRouter()
 @router.post("/upload", response_model=FileResponse, status_code=status.HTTP_201_CREATED)
 def upload_file(
     project_id: int = Form(...),
+    is_template: bool = Form(False),
     file: UploadFile = FastAPIFile(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -34,7 +35,8 @@ def upload_file(
         project_id=project_id,
         file_name=file.filename,
         file_path=file_path,
-        file_type=ext.replace(".", "") # Store 'csv' instead of '.csv'
+        file_type=ext.replace(".", ""), # Store 'csv' instead of '.csv'
+        is_template=is_template
     )
     db.add(new_file)
     db.commit()

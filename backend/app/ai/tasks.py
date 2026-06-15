@@ -32,11 +32,20 @@ def review_report_task() -> Task:
         agent=get_reviewer_agent()
     )
 
-def format_report_task() -> Task:
+def format_report_task(template_contents: str = "") -> Task:
+    template_instruction = ""
+    if template_contents:
+        template_instruction = (
+            f"\n\nA custom sample format/template document was provided by the user. "
+            f"You MUST strictly follow the structure, headings, tone, and formatting style shown in this template.\n"
+            f"=== TEMPLATE START ===\n{template_contents}\n=== TEMPLATE END ===\n"
+        )
+
     return Task(
         description=(
             "Take the polished report and format it meticulously in Markdown. "
             "Ensure proper use of headers (H1, H2, H3), lists, and bold text for readability."
+            f"{template_instruction}"
         ),
         expected_output="The final report cleanly formatted in Markdown.",
         agent=get_formatter_agent()

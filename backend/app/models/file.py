@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.models.base import Base
@@ -11,6 +11,7 @@ class File(Base):
     file_name = Column(String, nullable=False)
     file_path = Column(String, nullable=False)
     file_type = Column(String, nullable=False)
+    is_template = Column(Boolean, default=False)
     upload_date = Column(DateTime(timezone=True), server_default=func.now())
 
     project = relationship("Project", back_populates="files")

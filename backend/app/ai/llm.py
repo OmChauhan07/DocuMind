@@ -9,6 +9,9 @@ def setup_llm_env():
     else:
         # Fallback or warn if not set (for testing without a real key, it might fail)
         print("WARNING: GEMINI_API_KEY is not set in the environment or configuration.")
+    
+    # Fix for windows charmap encoding errors when crewai tries to log emojis
+    os.environ["PYTHONIOENCODING"] = "utf-8"
 
 # We will use this string identifier for our agents
-DEFAULT_LLM_MODEL = "gemini/gemini-2.5-flash"
+DEFAULT_LLM_MODEL = "gemini/gemma-4-26b-a4b-it"

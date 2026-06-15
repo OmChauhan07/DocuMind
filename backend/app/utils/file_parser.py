@@ -38,7 +38,25 @@ def _parse_pdf(file_path: str) -> str:
 
 def _parse_docx(file_path: str) -> str:
     doc = Document(file_path)
-    return "\n".join([para.text for para in doc.paragraphs])
+    lines = []
+    for para in doc.paragraphs:
+        text = para.text.strip()
+        if not text:
+            continue
+        style = para.style.name.lower()
+        if 'heading 1' in style:
+            lines.append(f"# {text}")
+        elif 'heading 2' in style:
+            lines.append(f"## {text}")
+        elif 'heading 3' in style:
+            lines.append(f"### {text}")
+        elif 'heading 4' in style:
+            lines.append(f"#### {text}")
+        elif 'list' in style or 'bullet' in style:
+            lines.append(f"- {text}")
+        else:
+            lines.append(text)
+    return "\n".join(lines)
 
 def _parse_tabular(file_path: str, ext: str) -> str:
     if ext == "csv":

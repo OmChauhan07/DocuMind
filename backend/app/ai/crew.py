@@ -2,7 +2,7 @@ from crewai import Crew, Process
 from app.ai.llm import setup_llm_env
 from app.ai.tasks import analyze_files_task, draft_report_task, review_report_task, format_report_task
 
-def generate_report_content(file_contents: str) -> str:
+def generate_report_content(file_contents: str, template_contents: str = "") -> str:
     """
     Orchestrates the CrewAI agents to generate a report based on file contents.
     """
@@ -13,7 +13,7 @@ def generate_report_content(file_contents: str) -> str:
     t_analyze = analyze_files_task(file_contents)
     t_draft = draft_report_task()
     t_review = review_report_task()
-    t_format = format_report_task()
+    t_format = format_report_task(template_contents)
     
     # 2. Assemble the Crew
     report_crew = Crew(
