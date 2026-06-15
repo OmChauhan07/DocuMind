@@ -60,16 +60,30 @@ def _run_report_generation(report_id: int, files_data: list, template_data: list
         report.content = content
         
         # Generate Exports
-        from app.utils.export_utils import export_to_docx, export_to_pdf
+        from app.utils.export_utils import export_to_docx, export_to_docx_from_template, export_to_pdf
         from app.core.config import settings
         
         base_path = os.path.join(settings.OUTPUT_DIR, f"report_{report_id}")
         docx_path = f"{base_path}.docx"
         pdf_path = f"{base_path}.pdf"
         
+        # Find a DOCX template if one was uploaded
+        docx_template_path = None
+        if template_data:
+            for t in template_data:
+                if t.get("file_type", "").lower() == "docx" and os.path.exists(t["file_path"]):
+                    docx_template_path = t["file_path"]
+                    break
+        
         export_error = None
         try:
-            export_to_docx(content, docx_path)
+            if docx_template_path:
+                # Clone the user's template and inject content using its styles
+                export_to_docx_from_template(content, docx_template_path, docx_path)
+            else:
+                # No template – generate a fresh DOCX
+                export_to_docx(content, docx_path)
+            
             export_to_pdf(content, pdf_path)
             report.report_path = base_path
         except Exception as export_ex:
@@ -77,8 +91,6 @@ def _run_report_generation(report_id: int, files_data: list, template_data: list
             traceback.print_exc()
             export_error = export_ex
             
-        report.status = "completed" if not export_error else "failed" # Keeping "failed" or marking "completed" depending on UX preference. Let's just use completed but log it, or fail it but keep content.
-        # Actually if export fails, we should let the user see the content, so setting status to completed is safer if we don't have partial statuses.
         report.status = "completed"
         db.commit()
     except Exception as e:

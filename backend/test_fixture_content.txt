@@ -1,0 +1,4 @@
+Project Alpha is a machine learning pipeline for classifying satellite images.
+It uses a ResNet-50 backbone fine-tuned on 12,000 labeled images.
+Accuracy reached 94.7% on the holdout set.
+The pipeline runs on AWS SageMaker with a p3.2xlarge instance.
