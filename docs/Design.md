@@ -1,0 +1,488 @@
+# Design Document
+
+# DocuMind — AI-Powered Smart Report Generator
+
+| Field       | Value                |
+| ----------- | -------------------- |
+| Version     | 1.0                  |
+| Author      | Om Chauhan           |
+| Date        | June 2026            |
+
+---
+
+## 1. Design Philosophy
+
+DocuMind follows a **clean, professional, and modern** design language suitable for a productivity tool. The UI emphasizes clarity, minimal distraction, and efficient workflows — enabling users to go from file upload to generated report in the fewest clicks possible.
+
+### Design Principles
+
+| Principle          | Application                                                          |
+| ------------------ | -------------------------------------------------------------------- |
+| Clarity First      | Each screen has a single primary action; no visual clutter           |
+| Professional Tone  | Dark-mode-forward palette with subtle gradients; no playful elements |
+| Progressive Flow   | Linear user journey: Register → Dashboard → Upload → Generate → Download |
+| Feedback Always    | Every action shows loading states, progress indicators, or toasts    |
+| Responsive Design  | Full-width layouts scale from mobile to desktop                      |
+
+---
+
+## 2. System Architecture Design
+
+### 2.1 Component Interaction Diagram
+
+```text
+┌─────────────────────────────────────────────────────────────────────┐
+│                        FRONTEND (React + Vite)                      │
+│                                                                     │
+│  ┌──────────┐   ┌──────────┐   ┌───────────┐   ┌───────────────┐  │
+│  │  SignIn   │   │  SignUp   │   │ Dashboard │   │  UploadFiles  │  │
+│  │  Page     │   │  Page     │   │   Page    │   │    Page       │  │
+│  └─────┬────┘   └─────┬────┘   └─────┬─────┘   └──────┬────────┘  │
+│        │              │              │                 │            │
+│        └──────────────┴──────┬───────┴─────────────────┘            │
+│                              │                                      │
+│                     ┌────────┴────────┐                             │
+│                     │   AuthContext    │  (JWT state management)    │
+│                     └────────┬────────┘                             │
+│                              │                                      │
+│                     ┌────────┴────────┐                             │
+│                     │   API Service   │  (Axios instance)          │
+│                     └────────┬────────┘                             │
+│                              │                                      │
+│  ┌───────────────────┐  ┌───┴──────────────┐                       │
+│  │  ProtectedRoute   │  │   MainLayout     │                       │
+│  │  (Route guard)    │  │   (Sidebar +     │                       │
+│  │                   │  │    Content area)  │                       │
+│  └───────────────────┘  └──────────────────┘                       │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+                              │
+                         HTTP (REST)
+                              │
+┌─────────────────────────────┴───────────────────────────────────────┐
+│                        BACKEND (FastAPI)                             │
+│                                                                     │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │                    API Layer (Routes)                         │   │
+│  │  /auth/register  /auth/login  /auth/me                       │   │
+│  │  /projects  /projects/{id}                                   │   │
+│  │  /files/upload  /files  /files/{id}                          │   │
+│  │  /reports  /reports/{id}  /reports/{id}/download/{fmt}       │   │
+│  └──────────────────┬───────────────────────────────────────────┘   │
+│                     │                                               │
+│  ┌──────────────────┴───────────────────────────────────────────┐   │
+│  │                 Service / Business Logic                      │   │
+│  │                                                               │   │
+│  │  ┌─────────────┐  ┌──────────────┐  ┌────────────────────┐   │   │
+│  │  │  Security   │  │  File Parser │  │   Export Engine     │   │   │
+│  │  │ (bcrypt+JWT)│  │  (6 formats) │  │ (DOCX + PDF)       │   │   │
+│  │  └─────────────┘  └──────────────┘  └────────────────────┘   │   │
+│  │                                                               │   │
+│  │  ┌───────────────────────────────────────────────────────┐    │   │
+│  │  │              AI Pipeline (CrewAI)                      │    │   │
+│  │  │  ┌──────────┐ ┌────────┐ ┌──────────┐ ┌───────────┐  │    │   │
+│  │  │  │ Analyzer │→│ Writer │→│ Reviewer │→│ Formatter │  │    │   │
+│  │  │  └──────────┘ └────────┘ └──────────┘ └───────────┘  │    │   │
+│  │  └───────────────────────────────────────────────────────┘    │   │
+│  └───────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │                  Data Layer (SQLAlchemy)                      │   │
+│  │  Models: User | Project | File | Report                      │   │
+│  └──────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### 2.2 Data Flow Between Services
+
+```text
+Auth Service ──> JWT Token ──> deps.py ──> User context for all routes
+                                              │
+                                    ┌─────────┴──────────┐
+                                    ▼                    ▼
+                            Project Service        File Service
+                                    │                    │
+                                    └─────────┬──────────┘
+                                              ▼
+                                      Report Service
+                                              │
+                                    ┌─────────┴──────────┐
+                                    ▼                    ▼
+                              AI Pipeline          Export Engine
+                            (CrewAI agents)     (python-docx, ReportLab)
+```
+
+---
+
+## 3. UI/UX Design
+
+### 3.1 Design System
+
+#### Color Palette
+
+| Role           | Color                     | Usage                                   |
+| -------------- | ------------------------- | --------------------------------------- |
+| Background     | `#0f172a` (Slate 900)     | Main app background                     |
+| Surface        | `#1e293b` (Slate 800)     | Cards, panels, sidebar                  |
+| Surface Hover  | `#334155` (Slate 700)     | Interactive element hover states        |
+| Primary        | `#6366f1` (Indigo 500)    | Buttons, links, active states           |
+| Primary Hover  | `#4f46e5` (Indigo 600)    | Button hover                            |
+| Accent         | `#22d3ee` (Cyan 400)      | Highlights, badges, progress indicators |
+| Success        | `#22c55e` (Green 500)     | Success states, completed status        |
+| Warning        | `#f59e0b` (Amber 500)     | Processing states, cautions             |
+| Danger         | `#ef4444` (Red 500)       | Errors, failed states, delete actions   |
+| Text Primary   | `#f8fafc` (Slate 50)      | Headings, body text                     |
+| Text Secondary | `#94a3b8` (Slate 400)     | Labels, hints, metadata                 |
+| Border         | `#334155` (Slate 700)     | Card borders, dividers                  |
+
+#### Typography
+
+| Element     | Font Family     | Size   | Weight   |
+| ----------- | --------------- | ------ | -------- |
+| Page Title  | Inter / System  | 24px   | 700 Bold |
+| Section Head| Inter / System  | 18px   | 600 Semi |
+| Body Text   | Inter / System  | 14px   | 400 Regular |
+| Label       | Inter / System  | 12px   | 500 Medium |
+| Code/Mono   | JetBrains Mono  | 13px   | 400 Regular |
+
+#### Spacing Scale
+
+| Token | Value | Usage                      |
+| ----- | ----- | -------------------------- |
+| xs    | 4px   | Inline spacing             |
+| sm    | 8px   | Element padding            |
+| md    | 16px  | Section padding            |
+| lg    | 24px  | Card padding               |
+| xl    | 32px  | Page margins               |
+| 2xl   | 48px  | Section gaps               |
+
+#### Component Patterns
+
+| Component     | Style                                                    |
+| ------------- | -------------------------------------------------------- |
+| Buttons       | Rounded-lg, 12px/24px padding, indigo-500 bg, hover scale|
+| Input Fields  | Slate-800 bg, slate-700 border, focus:indigo-500 ring    |
+| Cards         | Slate-800 bg, slate-700 border, rounded-xl, shadow-lg    |
+| Sidebar       | Fixed left, slate-900 bg, 240px width, icon + text links |
+| Toast/Alerts  | Fixed bottom-right, auto-dismiss, color-coded by severity|
+| Badges        | Rounded-full, uppercase, xs font, status-colored bg      |
+
+---
+
+### 3.2 Page Designs
+
+#### Page 1: Sign In (`/login`)
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│                    DocuMind Logo + Tagline                   │
+│                "AI-Powered Report Generator"                │
+│                                                             │
+│              ┌──────────────────────────────┐               │
+│              │        Sign In Card          │               │
+│              │                              │               │
+│              │  ┌────────────────────────┐  │               │
+│              │  │  Email                 │  │               │
+│              │  └────────────────────────┘  │               │
+│              │                              │               │
+│              │  ┌────────────────────────┐  │               │
+│              │  │  Password              │  │               │
+│              │  └────────────────────────┘  │               │
+│              │                              │               │
+│              │  ┌────────────────────────┐  │               │
+│              │  │     Sign In Button     │  │               │
+│              │  └────────────────────────┘  │               │
+│              │                              │               │
+│              │  Don't have an account?      │               │
+│              │  → Sign Up                   │               │
+│              └──────────────────────────────┘               │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Key Interactions:**
+- Full-screen centered card layout with gradient background.
+- Email validation on blur, password visibility toggle.
+- Loading spinner on button during API call.
+- Error toast for invalid credentials.
+- Redirect to `/dashboard` on success.
+
+---
+
+#### Page 2: Sign Up (`/register`)
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│                    DocuMind Logo + Tagline                   │
+│                                                             │
+│              ┌──────────────────────────────┐               │
+│              │       Sign Up Card           │               │
+│              │                              │               │
+│              │  ┌────────────────────────┐  │               │
+│              │  │  Full Name             │  │               │
+│              │  └────────────────────────┘  │               │
+│              │                              │               │
+│              │  ┌────────────────────────┐  │               │
+│              │  │  Email                 │  │               │
+│              │  └────────────────────────┘  │               │
+│              │                              │               │
+│              │  ┌────────────────────────┐  │               │
+│              │  │  Password              │  │               │
+│              │  └────────────────────────┘  │               │
+│              │                              │               │
+│              │  ┌────────────────────────┐  │               │
+│              │  │  Confirm Password      │  │               │
+│              │  └────────────────────────┘  │               │
+│              │                              │               │
+│              │  ┌────────────────────────┐  │               │
+│              │  │    Create Account      │  │               │
+│              │  └────────────────────────┘  │               │
+│              │                              │               │
+│              │  Already have an account?    │               │
+│              │  → Sign In                   │               │
+│              └──────────────────────────────┘               │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Key Interactions:**
+- Client-side password match validation.
+- Email format validation.
+- Auto-redirect to `/login` after successful registration.
+
+---
+
+#### Page 3: Dashboard (`/dashboard`)
+
+```text
+┌──────────┬──────────────────────────────────────────────────┐
+│          │                                                  │
+│ Sidebar  │              Dashboard                           │
+│          │                                                  │
+│ ┌──────┐ │  ┌─────────────────────────────────────────────┐│
+│ │ Logo │ │  │  Welcome, {user.name}!                      ││
+│ └──────┘ │  │  "Manage your projects and reports"          ││
+│          │  └─────────────────────────────────────────────┘│
+│ Dashboard│                                                  │
+│ > Active │  ┌──────────────────────┐                       │
+│          │  │ + Create New Project │ ← Floating Action     │
+│ Upload   │  └──────────────────────┘                       │
+│          │                                                  │
+│ Reports  │  ┌─────────────────────────────────────────────┐│
+│          │  │  Project Card Grid                           ││
+│ Settings │  │                                              ││
+│          │  │  ┌──────────┐ ┌──────────┐ ┌──────────┐    ││
+│ ──────── │  │  │ Project  │ │ Project  │ │ Project  │    ││
+│          │  │  │ Alpha    │ │ Beta     │ │ Gamma    │    ││
+│ Logout   │  │  │          │ │          │ │          │    ││
+│          │  │  │ 3 files  │ │ 1 file   │ │ 5 files  │    ││
+│          │  │  │ 2 reports│ │ 0 reports│ │ 1 report │    ││
+│          │  │  │          │ │          │ │          │    ││
+│          │  │  │ [Upload] │ │ [Upload] │ │ [Upload] │    ││
+│          │  │  │ [Delete] │ │ [Delete] │ │ [Delete] │    ││
+│          │  │  └──────────┘ └──────────┘ └──────────┘    ││
+│          │  │                                              ││
+│          │  └─────────────────────────────────────────────┘│
+│          │                                                  │
+└──────────┴──────────────────────────────────────────────────┘
+```
+
+**Key Interactions:**
+- Sidebar navigation with active state indicator.
+- Project cards show file count, report count, and creation date.
+- "Create New Project" opens inline modal or expands a form.
+- "Upload" navigates to `/upload?project={id}`.
+- "Delete" shows confirmation dialog.
+
+---
+
+#### Page 4: Upload Files (`/upload`)
+
+```text
+┌──────────┬──────────────────────────────────────────────────┐
+│          │                                                  │
+│ Sidebar  │         Upload Files — Project: {name}           │
+│          │                                                  │
+│          │  ┌─────────────────────────────────────────────┐│
+│          │  │                                             ││
+│          │  │      ┌───────────────────────────────┐      ││
+│          │  │      │                               │      ││
+│          │  │      │    📁 Drag & Drop Files       │      ││
+│          │  │      │    or Click to Browse          │      ││
+│          │  │      │                               │      ││
+│          │  │      │  Supported: .py .ipynb .csv   │      ││
+│          │  │      │  .xlsx .docx .pdf .txt .md    │      ││
+│          │  │      │  Max size: 100MB              │      ││
+│          │  │      │                               │      ││
+│          │  │      └───────────────────────────────┘      ││
+│          │  │                                             ││
+│          │  │  ☑ Upload as Template (DOCX formatting)     ││
+│          │  │                                             ││
+│          │  └─────────────────────────────────────────────┘│
+│          │                                                  │
+│          │  Uploaded Files:                                 │
+│          │  ┌─────────────────────────────────────────────┐│
+│          │  │  📄 main.py         (py)     [🗑 Delete]   ││
+│          │  │  📊 data.csv        (csv)    [🗑 Delete]   ││
+│          │  │  📝 template.docx   (docx)   [📋 Template] ││
+│          │  └─────────────────────────────────────────────┘│
+│          │                                                  │
+│          │  Report Settings:                               │
+│          │  ┌─────────────────────────────────────────────┐│
+│          │  │  Report Name: [___________________________] ││
+│          │  │  Template:    [Project Report        ▼    ] ││
+│          │  │                                             ││
+│          │  │  ┌──────────────────────────────────────┐   ││
+│          │  │  │       🚀 Generate Report             │   ││
+│          │  │  └──────────────────────────────────────┘   ││
+│          │  └─────────────────────────────────────────────┘│
+│          │                                                  │
+└──────────┴──────────────────────────────────────────────────┘
+```
+
+**Key Interactions:**
+- Drag-and-drop zone with visual feedback (border highlight, file preview).
+- Uploaded files listed with type icons and delete buttons.
+- Template toggle marks files as DOCX templates for style preservation.
+- "Generate Report" validates that at least one content file exists, then triggers `POST /reports`.
+- Redirects to `/progress/{reportId}` after report creation.
+
+---
+
+#### Page 5: Report Progress (`/progress/:reportId`)
+
+```text
+┌──────────┬──────────────────────────────────────────────────┐
+│          │                                                  │
+│ Sidebar  │         Report: {report_name}                    │
+│          │                                                  │
+│          │  ┌─────────────────────────────────────────────┐│
+│          │  │  Status: ● Processing                       ││
+│          │  │                                             ││
+│          │  │  ┌─────────────────────────────────────┐    ││
+│          │  │  │  ████████████████░░░░░░░░░░░░░░░░░  │    ││
+│          │  │  │  Agent 2/4: Writer Agent drafting... │    ││
+│          │  │  └─────────────────────────────────────┘    ││
+│          │  │                                             ││
+│          │  │  Pipeline Steps:                            ││
+│          │  │                                             ││
+│          │  │  ✅ 1. Analyzer — Extract file insights     ││
+│          │  │  🔄 2. Writer — Draft report sections       ││
+│          │  │  ⏳ 3. Reviewer — Quality assurance         ││
+│          │  │  ⏳ 4. Formatter — Clean markdown           ││
+│          │  │                                             ││
+│          │  └─────────────────────────────────────────────┘│
+│          │                                                  │
+│          │  ─── After Completion ───                        │
+│          │                                                  │
+│          │  ┌─────────────────────────────────────────────┐│
+│          │  │  Status: ● Completed ✅                     ││
+│          │  │                                             ││
+│          │  │  ┌─────────────┐  ┌─────────────┐          ││
+│          │  │  │ 📥 Download │  │ 📥 Download │          ││
+│          │  │  │    DOCX     │  │    PDF      │          ││
+│          │  │  └─────────────┘  └─────────────┘          ││
+│          │  │                                             ││
+│          │  │  ┌──────────────────────────────────────┐   ││
+│          │  │  │  Report Preview (Markdown rendered)  │   ││
+│          │  │  │                                      │   ││
+│          │  │  │  # Report Title                      │   ││
+│          │  │  │  ## Introduction                     │   ││
+│          │  │  │  The analysis reveals...             │   ││
+│          │  │  │  ...                                 │   ││
+│          │  │  └──────────────────────────────────────┘   ││
+│          │  │                                             ││
+│          │  └─────────────────────────────────────────────┘│
+│          │                                                  │
+└──────────┴──────────────────────────────────────────────────┘
+```
+
+**Key Interactions:**
+- Auto-polling every 3-5 seconds while status is `pending` or `processing`.
+- Visual pipeline step tracker with agent names and status icons.
+- Download buttons appear only when `status === "completed"`.
+- Report content preview rendered from stored markdown.
+- "Failed" state shows error message with a "Back to Upload" button.
+
+---
+
+## 4. Navigation Architecture
+
+```text
+┌───────────────────────────────────────────────────┐
+│                    App Router                      │
+│                                                    │
+│  Public Routes:                                    │
+│    /           → Redirect to /login               │
+│    /login      → SignIn page                      │
+│    /register   → SignUp page                      │
+│                                                    │
+│  Protected Routes (require JWT):                   │
+│    /dashboard         → Dashboard page            │
+│    /upload            → UploadFiles page          │
+│    /progress/:reportId → ReportProgress page      │
+│                                                    │
+│  Route Guard: ProtectedRoute.jsx                   │
+│    If !authenticated → Navigate to /login         │
+│    If authenticated  → Render in MainLayout       │
+│                                                    │
+│  MainLayout.jsx:                                   │
+│    ┌────────────┬─────────────────────────┐        │
+│    │  Sidebar   │     Page Content        │        │
+│    │            │     (children)          │        │
+│    │  Nav Links │                         │        │
+│    │  User Info │                         │        │
+│    │  Logout    │                         │        │
+│    └────────────┴─────────────────────────┘        │
+│                                                    │
+└───────────────────────────────────────────────────┘
+```
+
+---
+
+## 5. Responsive Design Strategy
+
+| Breakpoint | Layout Changes                                                   |
+| ---------- | ---------------------------------------------------------------- |
+| < 640px    | Sidebar collapses to hamburger menu; cards stack vertically      |
+| 640-1024px | Sidebar remains but narrows; 2-column card grid                  |
+| > 1024px   | Full sidebar (240px) + spacious content area; 3-column card grid |
+
+---
+
+## 6. Animation & Micro-Interactions
+
+| Element               | Animation                                        |
+| --------------------- | ------------------------------------------------ |
+| Page transitions      | Fade-in on route change (200ms ease)             |
+| Button hover          | Scale 1.02 + shadow deepen (150ms)               |
+| Card hover            | Subtle lift (translateY -2px) + border glow      |
+| File upload dropzone  | Border pulse + background color shift on drag-over|
+| Progress bar          | Smooth width transition (500ms ease-in-out)      |
+| Status badge          | Gentle pulse animation for "processing" state    |
+| Toast notifications   | Slide in from right, auto-dismiss after 4s       |
+| Sidebar active link   | Left border highlight + background tint          |
+
+---
+
+## 7. Accessibility Considerations
+
+| Requirement          | Implementation                                    |
+| -------------------- | ------------------------------------------------- |
+| Keyboard Navigation  | All interactive elements focusable with tab order |
+| Screen Reader        | Semantic HTML, ARIA labels on icons and buttons   |
+| Color Contrast       | WCAG AA compliant (4.5:1 text contrast ratio)    |
+| Focus Indicators     | Visible focus rings on all interactive elements   |
+| Error Messages       | Associated with form fields via `aria-describedby`|
+| Loading States       | `aria-busy` and `aria-live="polite"` on status areas |
+
+---
+
+## 8. References
+
+- [SRS.md](file:///d:/GitHub/DocuMind/docs/SRS.md) — Software Requirements Specification
+- [TechSpec.md](file:///d:/GitHub/DocuMind/docs/TechSpec.md) — Technical Specification
+- [AppFlow.md](file:///d:/GitHub/DocuMind/docs/AppFlow.md) — Application Flow Documentation
